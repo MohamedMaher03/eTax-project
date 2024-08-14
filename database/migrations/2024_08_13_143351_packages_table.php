@@ -11,10 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('configurations', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->id();
-            $table->string('key')->unique();
-            $table->string('value')->nullable();
+            $table->integer('period');
+            $table->integer('cost');
+            $table->foreignId('duration_id')->constrained('durations')->cascadeOnDelete();
             $table->timestamps();
         });
     }
@@ -24,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('configrations');
+        Schema::dropIfExists('packages');
     }
 };
