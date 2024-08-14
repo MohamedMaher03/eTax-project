@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users_revisers', function (Blueprint $table) {
             $table->id();
-            $table->integer('balance');
+            $table->integer('balance')->default(0);
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->foreignId('organization_id')->constrained('organizations')->onDelete('cascade');
             $table->timestamps();

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->integer('period');
             $table->integer('cost');
             $table->foreignId('duration_id')->constrained('durations')->cascadeOnDelete();
+            $table->integer('operations_count');
             $table->timestamps();
         });
     }
