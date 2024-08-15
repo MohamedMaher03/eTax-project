@@ -6,6 +6,7 @@ use App\Customs\Services\EmailVerificationService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
 use App\Http\Requests\RegistrationRequest;
+use App\Http\Requests\VerifyEmailRequest;
 use App\Models\Organization;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -33,6 +34,7 @@ class AuthController extends Controller
         $organization= Organization::create([
             'name' => $validatedData['organization_name'],
             'user_id' => $user->id,
+            'package_id' => 0,
         ]);
 
         if($user && $organization){
@@ -59,6 +61,13 @@ class AuthController extends Controller
         $user = User::findOrFail($validatedData['user_id']);
         $organization = Organization::findOrFail($validatedData['organization_id']);
 
+        if(!($user->email_verified_at)){
+            return response()->json([
+               'status' => 'failed',
+               'message' => 'You cannot continue registration as your email is not verified',
+            ]);
+        }
+
         // Update user data
         $user->update([
             'password' => bcrypt($validatedData['password']),
@@ -77,6 +86,11 @@ class AuthController extends Controller
             'user' => $user,
             'organization' => $organization,
         ]);
+    }
+
+    public function verifyUserEmail(VerifyEmailRequest $request)
+    {
+        return $this->service->verifyEmail($request->email,$request->token);
     }
 
 }
