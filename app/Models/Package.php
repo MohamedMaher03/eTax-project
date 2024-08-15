@@ -9,3 +9,4 @@ class Package extends Model
 {
     use HasFactory;
 }
+
