@@ -5,7 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class User_reviser extends Model
+class Package extends Model
 {
     use HasFactory;
+    
+    public function duration(){
+        return $this->hasOne(Durations::class);
+    }
 }

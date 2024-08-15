@@ -3,10 +3,10 @@
 namespace Database\Seeders;
 
 use App\Models\Duration;
-use App\Models\Durations;
+//use App\Models\Duration;
 use App\Models\Organization;
 use App\Models\User;
-use App\Models\Packages;
+use App\Models\Package;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Durations::factory()->count(20)->create();
+        Duration::factory()->count(20)->create();
         $this->call(ConfigurationsSeeder::class);
-        packages::factory()->count(20)->create();
+        Package::factory()->count(20)->create();
         $this->call(RoleSeeder::class);
         User::factory()->create();
         Organization::factory()->create();
     }
-    
+
 }
