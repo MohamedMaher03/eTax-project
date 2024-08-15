@@ -2,8 +2,12 @@
 
 namespace Database\Seeders;
 
+use App\Models\Duration;
+use App\Models\Durations;
+use App\Models\Organization;
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Packages;
+use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,11 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]);
+        Durations::factory()->count(20)->create();
+        $this->call(ConfigurationsSeeder::class);
+        packages::factory()->count(20)->create();
+        $this->call(RoleSeeder::class);
+        User::factory()->create();
+        Organization::factory()->create();
     }
+    
 }

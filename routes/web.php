@@ -8,4 +8,3 @@ Route::get('/', function () {
 });
 
 
-Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
