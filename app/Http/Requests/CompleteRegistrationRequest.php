@@ -22,13 +22,15 @@ class CompleteRegistrationRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => ['required', 'exists:users,id'],
-            'organization_id' => ['required', 'exists:organizations,id'],
+            'email' => ['required', 'string', 'email', 'max:255'],
             'password' => ['required', 'string', 'min:8', 'regex:/[a-z]/', 'regex:/[A-Z]/', 'regex:/[\W]/', 'confirmed',],
             'commercial_register_number' => ['required', 'integer','unique:organizations,commercial_register_number', 'digits:9'],
             'tax_card_number' => ['required', 'integer', 'digits_between:6,20'],
             'users_count' => ['required', 'integer','digits_between:1,20'],
             'revisers_count' => ['required', 'integer','digits_between:1,20'],
+            'package_id'=>['required', 'integer', 'exists:packages,id'],
+
+
         ];
     }
 }

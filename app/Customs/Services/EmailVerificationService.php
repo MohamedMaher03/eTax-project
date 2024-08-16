@@ -56,29 +56,37 @@ class EmailVerificationService
     public function verifyEmail(string $email, string $token)
     {
         $user = User::where('email', $email)->first();
-        if(!$user){
-            response()->json([
+        if (!$user) {
+            return response()->json([
                 'status' => 'failed',
                 'message' => 'User not found'
-            ])->send();
-            exit;
+            ], 404);
         }
+
         $this->checkEmailIsVerified($user);
-        $verifiedToken =$this->verifyToken($email, $token);
-        if($user->markEmailAsVerified()) {
-            $verifiedToken->delete();
-            response()->json([
-               'status' => 'success',
-               'message' => 'Email has been verified'
-            ]);
+
+        $verifiedToken = $this->verifyToken($email, $token);
+        if (!$verifiedToken) {
+            return response()->json([
+                'status' => 'failed',
+                'message' => 'Invalid or expired token'
+            ], 400);
         }
-        else{
-            response()->json([
-               'status' => 'failed',
+
+        if ($user->markEmailAsVerified()) {
+            $verifiedToken->delete();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Email has been verified'
+            ], 200);
+        } else {
+            return response()->json([
+                'status' => 'failed',
                 'message' => 'Email verification failed'
-            ]);
+            ], 400);
         }
     }
+
 
     public function resendLink($email)
     {
@@ -101,6 +109,9 @@ class EmailVerificationService
         }
         $token = Str::uuid();
         $url = config('app.url') . "?token=" . $token . "&email=" . $email;
+
+        //$url = route('verify.email', ['token' => $token, 'email' => $email]);
+
         $saveToken = EmailVerficationToken::create([
             "email" => $email,
             "token" => $token,
@@ -109,8 +120,7 @@ class EmailVerificationService
         if($saveToken){
             return $url;
         }
+        throw new \Exception("Unable to generate verification link.");
     }
-
-
 
 }
