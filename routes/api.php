@@ -10,7 +10,7 @@ Route::get('/user', function (Request $request) {
 
 Route::post('auth/register', [AuthController::class,'register']);
 
-Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail']);
+Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])->name('verify.email');
 
 Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
 
