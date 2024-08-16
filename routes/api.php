@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PackageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
@@ -27,5 +28,5 @@ Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])
 
 Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
 
-
+Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->name('buy.package');
 
