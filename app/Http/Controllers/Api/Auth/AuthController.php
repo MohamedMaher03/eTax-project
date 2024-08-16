@@ -2,21 +2,41 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
-use App\Customs\Services\EmailVerificationService;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
+use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegistrationRequest;
 use App\Http\Requests\VerifyEmailRequest;
 use App\Models\Organization;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    public function __construct(private EmailVerificationService $service)
-    {
 
+
+    public function __construct() {
+        
     }
+
+    public function login(LoginRequest $request){
+
+        if (! $token = auth('api')->attempt($request->validated())) {
+            return response()->json(['error' => 'Either email or password is wrong.'], 401);
+        }
+
+        return $this->createNewToken($token);
+    }
+
+    protected function createNewToken($token){
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'bearer',
+            'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            'user' => auth('api')->user(),
+        ]);
+    }
+
     public function register(RegistrationRequest $request)
     {
         $validatedData = $request->validated();

@@ -17,12 +17,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        Duration::factory()->count(20)->create();
-        $this->call(ConfigurationsSeeder::class);
-        Package::factory()->count(20)->create();
+        // Duration::factory()->count(20)->create();
+        // $this->call(ConfigurationsSeeder::class);
+        // Package::factory()->count(20)->create();
         $this->call(RoleSeeder::class);
         User::factory()->create();
-        Organization::factory()->create();
+        // Organization::factory()->create();
     }
 
 }
