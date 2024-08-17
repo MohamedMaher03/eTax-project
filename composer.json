@@ -11,7 +11,7 @@
         "laravel/tinker": "^2.9",
         "symfony/console": "^7.1",
         "symfony/error-handler": "^7.1",
-        "tymon/jwt-auth": "^2.1"
+        "tymon/jwt-auth": "^2.0"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

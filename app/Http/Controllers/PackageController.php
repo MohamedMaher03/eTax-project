@@ -12,12 +12,6 @@ class PackageController extends Controller
     {
         $user = auth()->user();
 
-        if (!$user || $user->role_id !== 1) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Unauthorized access'
-            ], 403);
-        }
 
         $package = Package::find($id);
 

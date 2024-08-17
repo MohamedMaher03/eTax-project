@@ -4,7 +4,7 @@ use App\Http\Controllers\PackageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
-use App\Http\Controllers\PackageController;
+//use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransferController;
 
@@ -28,5 +28,5 @@ Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])
 
 Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
 
-Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->name('buy.package');
+Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->middleware('role:1',)->name('buy.package');
 

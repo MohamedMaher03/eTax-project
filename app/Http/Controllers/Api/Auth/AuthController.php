@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
+use App\Customs\Services\EmailVerificationService;
 use App\Models\EmailVerficationToken;
 use App\Models\Package;
 use App\Models\UserReviser;
