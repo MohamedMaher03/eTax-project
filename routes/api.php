@@ -14,8 +14,10 @@ Route::get('/user', function (Request $request) {
 
 Route::post('auth/register', [AuthController::class,'register']);
 Route::get('/package', [PackageController::class, 'getAllData']);
-Route::post('/user/status', [UserStatusController::class, 'changeStatus']);
-Route::post('/transfer', [TransferController::class, 'transfer']);
+Route::post('/user/status', [UserStatusController::class, 'changeStatus'])
+    ->middleware(['auth', 'admin']);
+Route::post('/transfer', [TransferController::class, 'transfer'])
+    ->middleware(['auth', 'admin']);
 
 Route::post('/auth/login', [AuthController::class,'login']);
 Route::post('/login', function() {
@@ -26,7 +28,11 @@ Route::post('/login', function() {
 
 Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])->name('verify.email');
 
+Route::get('register-data/{token}',[AuthController::class,'getRegisterData']);
+
 Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
 
-Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->middleware('role:1',)->name('buy.package');
+Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])
+    ->middleware(['auth', 'admin'])
+    ->name('buy.package');
 

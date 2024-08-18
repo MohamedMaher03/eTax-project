@@ -26,7 +26,7 @@ class EmailVerificationService
                 return $token;
             }
             else{
-                $token->delete();
+                //$token->delete(); //remember to delete token after complete registration
                 response()->json([
                     'status' => 'failed',
                     'message' => 'Token expired'
