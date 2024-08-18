@@ -74,7 +74,7 @@ class EmailVerificationService
         }
 
         if ($user->markEmailAsVerified()) {
-            $verifiedToken->delete();
+            //$verifiedToken->delete();
             return response()->json([
                 'status' => 'success',
                 'message' => 'Email has been verified'
@@ -104,9 +104,9 @@ class EmailVerificationService
     public function generateVerificationLink(string $email):string
     {
         $checkIfTokenExists = EmailVerficationToken::where('email', $email)->first();
-        if ($checkIfTokenExists) {
-            $checkIfTokenExists->delete();
-        }
+        // if ($checkIfTokenExists) {
+        //     $checkIfTokenExists->delete();
+        // }
         $token = Str::uuid();
         $url = config('app.url') . "?token=" . $token . "&email=" . $email;
 

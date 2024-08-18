@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\ApiResponse;
 use App\Models\Organization;
 use App\Models\Package;
 use Illuminate\Http\Request;
@@ -10,34 +11,25 @@ class PackageController extends Controller
 {
     public function buyPackage($id)
     {
-        $user = auth()->user();
+        try {
+            $user = auth()->user();
 
+            $package = Package::find($id);
+            if (!$package) {
+                return ApiResponse::error('Package not found');
+            }
 
-        $package = Package::find($id);
+            $organization = Organization::where('user_id', $user->id)->first();
+            if (!$organization) {
+                return ApiResponse::error('Organization not found');
+            }
 
-        if(!$package){
-            return response()->json([
-               'status' => 'failed',
-               'message' => 'Package not found'
-            ],404);
+            $organization->operations_count += $package->operations_count;
+            $organization->save();
+
+            return ApiResponse::success('Package bought successfully');
+        } catch (\Exception $e) {
+            return ApiResponse::generalError();
         }
-        $operationCount=$package->operations_count;
-
-        $organization = Organization::where('user_id', $user->id)->first();
-        if (!$organization) {
-            return response()->json([
-                'status' => 'failed',
-                'message' => 'Organization not found'
-            ], 404);
-        }
-        //$organization=Organization::find(11);;
-        $organizationCount=$organization->operations_count;
-        $organizationCount+=$operationCount;
-        $organization->update(['operations_count'=>$organizationCount]);
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Package buy successfully'
-        ]);
     }
 }
