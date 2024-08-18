@@ -10,34 +10,33 @@ use App\Models\Role ;
 
 class TransferController extends Controller
 {
-    public function transfer(Request $request)
+    public function transfer(Request $request )
     {
-        //validations
+         // get user
+     $admin = auth()->user();
+     $organization = Organization::where('user_id' , $admin->id)->first();
+     $balance = $request->route('balance') ;
+     // validation
+     if ($balance> $organization -> operations_count){
+         return response()->json(['message' => 'failed']);
+     }
+     $userId = $request->route('userId');
+
+     $user = User::find($userId);
+     $userReviser = UserReviser::where('user_id' , $user->id)->first();
+     // validation
+     if (!$userReviser){
+         return response()->json(['message' => 'failed']);}
+         // subtract from admin
+         $organization->operations_count -=  $balance;
+         $organization->save();
+         // add user balance
+         $userReviser->balance +=  $balance;
+         $userReviser->save();
+         return response()->json(['message' => 'Transfer successful']);
 
 
-        $admin = User::where('role_id', 2)->first();   //
 
-
-        $user = User::find($request->id);
-
-//        $organization=Organization::where('user_id',$admin->id)->first();
-//        $user_reviser=UserReviser::where('user_id',$user->id)->first();
-
-        // DB::beginTransaction();
-        // Balance deduction = 100 from admin
-
-        $organization->operations_count -= $request->balance;
-        $organization->save();
-        // add new balance = 100 to user
-        $user_reviser->balance += 100;
-        $user_reviser->save();
-
-        //DB::commit();
-
-            return response()->json(['message' => 'Transfer successful']);
-
-       // DB::rollBack();
-       // return response()->json(['error' => 'Transfer failed']);
     }
 }
 
