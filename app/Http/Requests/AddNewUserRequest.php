@@ -4,8 +4,9 @@ namespace App\Http\Requests;
 
 use App\Enums\Role;
 use Illuminate\Validation\Rules\Enum;
+use Illuminate\Foundation\Http\FormRequest;
 
-class AddNewUserRequest
+class AddNewUserRequest extends FormRequest
 {
     public function rules(): array
     {
