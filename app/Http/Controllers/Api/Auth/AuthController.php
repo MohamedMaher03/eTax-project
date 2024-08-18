@@ -50,16 +50,18 @@ class AuthController extends Controller
     {
         $validatedData = $request->validated();
 
-
+        $admin_role_id=Role::where('name','admin')->first()->id;
+        //make status is 0 by default in database  (optional)
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'phone' => $validatedData['phone'] ?? null,
-            'password' => '1234aA!4',
-            'role_id' => 1,
+            'password' => bcrypt('1234aA!4'),
+            'role_id' => $admin_role_id,
             'status' => 0,
         ]);
 
+        // make package_id nullable by default  (required)
         $organization= Organization::create([
             'name' => $validatedData['organization_name'],
             'user_id' => $user->id,
@@ -90,22 +92,24 @@ class AuthController extends Controller
         $validatedData = $request->validated();
 
         $user = User::where('email', $validatedData['email'])->firstOrFail();
-        $organization = Organization::where('user_id', $user->id)->firstOrFail();
-
 
         if(!($user->email_verified_at)){
             return response()->json([
-               'status' => 'failed',
-               'message' => 'You cannot continue registration as your email is not verified',
+                'status' => 'failed',
+                'message' => 'You cannot continue registration as your email is not verified',
             ],400);
         }
+
+        $organization = Organization::where('user_id', $user->id)->firstOrFail();
+
+
 
         $user->update([
             'password' => bcrypt($validatedData['password']),
         ]);
 
-        $operations_count=(Package::where('id',$validatedData['package_id']))->value('operations_count');
-
+        //$operations_count=(Package::where('id',$validatedData['package_id']))->value('operations_count');
+        $operations_count=Package::find($validatedData['package_id'])->operations_count;
         $organization->update([
             'commercial_register_number' => $validatedData['commercial_register_number'] ,
             'tax_card_number' => $validatedData['tax_card_number'] ,
@@ -118,7 +122,7 @@ class AuthController extends Controller
         $faker = Faker::create();
 
         $prefixes = ['010', '011', '012', '015'];
-
+         //move it outside function  (required)
         function generatePhoneNumber($prefixes, $faker) {
             return $faker->randomElement($prefixes) . $faker->numerify('########');
         }
@@ -177,13 +181,13 @@ class AuthController extends Controller
     public function logout()
     {
         auth('api')->logout();
-        return response()->json(['message' => 'Successfully logged out']);   
+        return response()->json(['message' => 'Successfully logged out']);
     }
 
     public function addUser(AddNewUserRequest $request){
 
         $validatedData = $request->validated();
-
+         //validate role as id and exits in roles table
         $roleEnum = Role::fromString($validatedData['role_id']);
 
         $user = User::create([
@@ -194,8 +198,9 @@ class AuthController extends Controller
             'role_id' => $roleEnum->value,
             'status' => $validatedData['status'],
         ]);
-        
+
         if($user){
+            //add in user_revisers or organizations
             return response()->json([
                 'status'=> 'success',
                 'message'=> 'User Added Successfully',
@@ -206,5 +211,5 @@ class AuthController extends Controller
                 'message'=> 'There was a problem in the data entered please try again',
             ]);
         };
-    }    
+    }
 }

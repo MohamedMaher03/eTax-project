@@ -14,10 +14,10 @@ Route::get('/user', function (Request $request) {
 Route::post('auth/register', [AuthController::class,'register']);
 Route::get('/package', [PackageController::class, 'getAllData']);
 Route::post('/user/status', [UserStatusController::class, 'changeStatus']);
-Route::post('/transfer/{balance}/{userId}', [TransferController::class, 'transfer'])->middleware('role:1');
+Route::post('/transfer', [TransferController::class, 'transfer'])->middleware(['role:1']);
 
 Route::post('/auth/login', [AuthController::class,'login']);
-Route::post('/auth/logout', [AuthController::class,'logout']);
+Route::post('/auth/logout', [AuthController::class,'logout'])->middleware('auth');
 Route::post('/auth/newUser', [AuthController::class,'addUser']);
 
 

@@ -10,23 +10,24 @@ use App\Models\Role ;
 
 class TransferController extends Controller
 {
-    public function transfer(Request $request )
+    public function transfer(Request $request)
     {
          // get user
      $admin = auth()->user();
      $organization = Organization::where('user_id' , $admin->id)->first();
-     $balance = $request->route('balance') ;
+     $balance = $request->balance;
      // validation
      if ($balance> $organization -> operations_count){
          return response()->json(['message' => 'failed']);
      }
-     $userId = $request->route('userId');
+     $userId = $request->userId;
 
      $user = User::find($userId);
      $userReviser = UserReviser::where('user_id' , $user->id)->first();
      // validation
      if (!$userReviser){
-         return response()->json(['message' => 'failed']);}
+         return response()->json(['message' => 'failed']);
+         }
          // subtract from admin
          $organization->operations_count -=  $balance;
          $organization->save();

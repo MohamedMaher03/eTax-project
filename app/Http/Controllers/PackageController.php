@@ -34,6 +34,7 @@ class PackageController extends Controller
         $organizationCount=$organization->operations_count;
         $organizationCount+=$operationCount;
         $organization->update(['operations_count'=>$organizationCount]);
+
         return response()->json([
             'status' => 'success',
             'message' => 'Package buy successfully'
