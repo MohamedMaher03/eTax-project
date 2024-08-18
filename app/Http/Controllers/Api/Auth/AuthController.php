@@ -1,6 +1,10 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
+
+use App\Enums\Role;
+use App\Enums\Status;
+use App\Http\Requests\AddNewUserRequest;
 use App\Http\Traits\HttpResponse;
 use App\Models\EmailVerficationToken;
 use App\Models\Package;
@@ -175,4 +179,32 @@ class AuthController extends Controller
         auth('api')->logout();
         return response()->json(['message' => 'Successfully logged out']);   
     }
+
+    public function addUser(AddNewUserRequest $request){
+
+        $validatedData = $request->validated();
+
+        $roleEnum = Role::fromString($validatedData['role_id']);
+
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $validatedData['phone'] ?? null,
+            'password' => $validatedData['password'],
+            'role_id' => $roleEnum->value,
+            'status' => $validatedData['status'],
+        ]);
+        
+        if($user){
+            return response()->json([
+                'status'=> 'success',
+                'message'=> 'User Added Successfully',
+            ]);
+        }else{
+            return response()->json([
+                'status'=> 'error',
+                'message'=> 'There was a problem in the data entered please try again',
+            ]);
+        };
+    }    
 }

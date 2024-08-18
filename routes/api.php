@@ -18,7 +18,7 @@ Route::post('/transfer', [TransferController::class, 'transfer']);
 
 Route::post('/auth/login', [AuthController::class,'login']);
 Route::post('/auth/logout', [AuthController::class,'logout']);
-
+Route::post('/auth/newUser', [AuthController::class,'addUser']);
 
 
 Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])->name('verify.email');
