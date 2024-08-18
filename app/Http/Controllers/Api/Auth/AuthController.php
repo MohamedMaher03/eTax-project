@@ -184,7 +184,7 @@ class AuthController extends Controller
     {
         try{
             auth('api')->logout();
-            return response()->json(['message' => 'Successfully logged out']);
+            return ApiResponse::success('Successfully logged out');
         }catch (\Exception $e){
             return ApiResponse::generalError();
         }
