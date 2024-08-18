@@ -1,15 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
-
-use App\Enums\Role;
-use App\Enums\Status;
-use App\Http\Requests\AddNewUserRequest;
-use App\Http\Traits\HttpResponse;
 use App\Models\EmailVerficationToken;
 use App\Models\Package;
 use App\Models\UserReviser;
 use Faker\Factory as Faker;
+use App\Enums\Role;
+use App\Enums\Status;
+use App\Http\Requests\AddNewUserRequest;
+use App\Http\Traits\HttpResponse;
+use App\Customs\Services\EmailVerificationService;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
