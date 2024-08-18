@@ -4,7 +4,6 @@ use App\Http\Controllers\PackageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
-//use App\Http\Controllers\PackageController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransferController;
 
@@ -20,10 +19,8 @@ Route::post('/transfer', [TransferController::class, 'transfer'])
     ->middleware(['auth', 'admin']);
 
 Route::post('/auth/login', [AuthController::class,'login']);
-Route::post('/login', function() {
-    return response()->json(['message' => 'Login route working']);
-});
-
+Route::post('/auth/logout', [AuthController::class,'logout'])->middleware('auth');
+Route::post('/auth/newUser', [AuthController::class,'addUser']);
 
 
 Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])->name('verify.email');

@@ -1,12 +1,13 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
-use App\Customs\Services\EmailVerificationService;
-use App\Models\EmailVerficationToken;
+
 use App\Models\Package;
 use App\Models\Role;
 use App\Models\UserReviser;
 use Faker\Factory as Faker;
+use App\Http\Requests\AddNewUserRequest;
+use App\Customs\Services\EmailVerificationService;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
@@ -16,6 +17,7 @@ use App\Http\Requests\VerifyEmailRequest;
 use App\Models\Organization;
 use App\Models\User;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Helpers\ApiResponse;
 
 $adminRoleId=Role::where('name','admin')->first()->id;
 
@@ -35,11 +37,15 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request){
 
-        if (! $token = auth('api')->attempt($request->validated())) {
-            return response()->json(['error' => 'Either email or password is wrong.'], 401);
+        try{
+            if (! $token = auth('api')->attempt($request->validated())) {
+                return response()->json(['error' => 'Either email or password is wrong.'], 401);
+            }
+    
+            return $this->createNewToken($token);
+        }catch(\Exception $e){
+            return ApiResponse::generalError();
         }
-
-        return $this->createNewToken($token);
     }
 
     protected function createNewToken($token){
@@ -55,7 +61,8 @@ class AuthController extends Controller
     {
         $validatedData = $request->validated();
 
-
+        $admin_role_id=Role::where('name','admin')->first()->id;
+        //make status is 0 by default in database  (optional)
         $user = User::create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
@@ -64,6 +71,7 @@ class AuthController extends Controller
             'role_id' => $this->adminRoleId,
         ]);
 
+        // make package_id nullable by default  (required)
         $organization= Organization::create([
             'name' => $validatedData['organization_name'],
             'user_id' => $user->id,
@@ -129,22 +137,24 @@ class AuthController extends Controller
         $validatedData = $request->validated();
 
         $user = User::where('email', $validatedData['email'])->firstOrFail();
-        $organization = Organization::where('user_id', $user->id)->firstOrFail();
-
 
         if(!($user->email_verified_at)){
             return response()->json([
-               'status' => 'failed',
-               'message' => 'You cannot continue registration as your email is not verified',
+                'status' => 'failed',
+                'message' => 'You cannot continue registration as your email is not verified',
             ],400);
         }
+
+        $organization = Organization::where('user_id', $user->id)->firstOrFail();
+
+
 
         $user->update([
             'password' => bcrypt($validatedData['password']),
         ]);
 
-        $operations_count=(Package::where('id',$validatedData['package_id']))->value('operations_count');
-
+        //$operations_count=(Package::where('id',$validatedData['package_id']))->value('operations_count');
+        $operations_count=Package::find($validatedData['package_id'])->operations_count;
         $organization->update([
             'commercial_register_number' => $validatedData['commercial_register_number'] ,
             'tax_card_number' => $validatedData['tax_card_number'] ,
@@ -157,7 +167,6 @@ class AuthController extends Controller
         $faker = Faker::create();
 
         $prefixes = ['010', '011', '012', '015'];
-
 
         for ($i = 0; $i < $validatedData['users_count']; $i++) {
             $createdUser= User::create([
@@ -209,4 +218,48 @@ class AuthController extends Controller
 
     }
 
+    public function logout()
+    {
+        try{
+            auth('api')->logout();
+            return ApiResponse::success('Successfully logged out');
+        }catch (\Exception $e){
+            return ApiResponse::generalError();
+        }
+    }
+
+    public function addUser(AddNewUserRequest $request){
+
+        try{
+            $validatedData = $request->validated();
+            $roleId= $validatedData['role_id'];
+    
+            $user = User::create([
+                'name' => $validatedData['name'],
+                'email' => $validatedData['email'],
+                'phone' => $validatedData['phone'] ?? null,
+                'password' => bcrypt($validatedData['password']),
+                'role_id' => $roleId,
+                'status' => $validatedData['status'],
+            ]);
+    
+            if($user){
+                return ApiResponse::success("A new user was added successfully");
+                if($roleId == 2){
+                    UserReviser::create([
+                    'name' => $validatedData['name'],
+                    'email' => $validatedData['email'],
+                    'phone' => $validatedData['phone'] ?? null,
+                    'password' => bcrypt($validatedData['password']),
+                    'status' => $validatedData['status'],
+                    ]);
+                }
+            }else{
+                return ApiResponse::validationError("An error validating data occurred please try again");
+            };
+    
+        }catch (\Exception $e){
+            return ApiResponse::generalError();
+        };
+    }
 }
