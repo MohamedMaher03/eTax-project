@@ -1,11 +1,15 @@
 <?php
 
 namespace App\Http\Controllers\Api\Auth;
-use App\Customs\Services\EmailVerificationService;
 use App\Models\EmailVerficationToken;
 use App\Models\Package;
 use App\Models\UserReviser;
 use Faker\Factory as Faker;
+use App\Enums\Role;
+use App\Enums\Status;
+use App\Http\Requests\AddNewUserRequest;
+use App\Http\Traits\HttpResponse;
+use App\Customs\Services\EmailVerificationService;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CompleteRegistrationRequest;
@@ -18,11 +22,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    private EmailVerificationService $service;
-    public function __construct(private EmailVerificationService $servic)
-    {
-        $this->service = $servic;
-    }
+    // private EmailVerificationService $service;
+    // public function __construct(private EmailVerificationService $servic)
+    // {
+    //     $this->service = $servic;
+    // }
 
     public function login(LoginRequest $request){
 
@@ -170,4 +174,37 @@ class AuthController extends Controller
 
     }
 
+    public function logout()
+    {
+        auth('api')->logout();
+        return response()->json(['message' => 'Successfully logged out']);   
+    }
+
+    public function addUser(AddNewUserRequest $request){
+
+        $validatedData = $request->validated();
+
+        $roleEnum = Role::fromString($validatedData['role_id']);
+
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'phone' => $validatedData['phone'] ?? null,
+            'password' => $validatedData['password'],
+            'role_id' => $roleEnum->value,
+            'status' => $validatedData['status'],
+        ]);
+        
+        if($user){
+            return response()->json([
+                'status'=> 'success',
+                'message'=> 'User Added Successfully',
+            ]);
+        }else{
+            return response()->json([
+                'status'=> 'error',
+                'message'=> 'There was a problem in the data entered please try again',
+            ]);
+        };
+    }    
 }
