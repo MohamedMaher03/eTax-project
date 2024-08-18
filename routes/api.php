@@ -14,19 +14,25 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-Route::post('auth/register', [AuthController::class,'register']);
-Route::get('/package', [PackageController::class, 'getAllpackage']);
-Route::post('/user/status', [UserStatusController::class, 'changeStatus']);
-Route::post('/transfer', [TransferController::class, 'transfer'])->middleware(['role:1']);
+Route::post('auth/register', [AuthController::class, 'register']);
+Route::get('/package', [PackageController::class, 'getAllData']);
+Route::post('/user/status', [UserStatusController::class, 'changeStatus'])
+    ->middleware(['auth', 'admin']);
+Route::post('/transfer', [TransferController::class, 'transfer'])
+    ->middleware(['auth', 'admin']);
 
-Route::post('/auth/login', [AuthController::class,'login']);
-Route::post('/auth/logout', [AuthController::class,'logout'])->middleware('auth');
-Route::post('/auth/newUser', [AuthController::class,'addUser']);
+Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth');
+Route::post('/auth/newUser', [AuthController::class, 'addUser']);
 
 
-Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])->name('verify.email');
+Route::post('auth/verify-user-email', [AuthController::class, 'verifyUserEmail'])->name('verify.email');
 
-Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
+Route::get('register-data/{token}', [AuthController::class, 'getRegisterData']);
 
-Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->middleware('role:1',)->name('buy.package');
+Route::post('auth/complete-register', [AuthController::class, 'completeRegister']);
+
+Route::patch('buy/package/{id}', [PackageController::class, 'buyPackage'])
+    ->middleware(['auth', 'admin'])
+    ->name('buy.package');
 
