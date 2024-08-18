@@ -22,11 +22,11 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class AuthController extends Controller
 {
-    // private EmailVerificationService $service;
-    // public function __construct(private EmailVerificationService $servic)
-    // {
-    //     $this->service = $servic;
-    // }
+    private EmailVerificationService $service;
+    public function __construct(private EmailVerificationService $servic)
+    {
+        $this->service = $servic;
+    }
 
     public function login(LoginRequest $request){
 
