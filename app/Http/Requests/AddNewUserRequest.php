@@ -3,9 +3,10 @@
 namespace App\Http\Requests;
 
 use App\Enums\Role;
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rules\Enum;
 
-class AddNewUserRequest
+class AddNewUserRequest extends FormRequest
 {
     public function rules(): array
     {
