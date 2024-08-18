@@ -6,13 +6,16 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransferController;
+use App\Http\Requests\StatusRequest;
+use App\Http\Requests\TransferRequest;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
 Route::post('auth/register', [AuthController::class,'register']);
-Route::get('/package', [PackageController::class, 'getAllData']);
+Route::get('/package', [PackageController::class, 'getAllpackage']);
 Route::post('/user/status', [UserStatusController::class, 'changeStatus']);
 Route::post('/transfer', [TransferController::class, 'transfer'])->middleware(['role:1']);
 

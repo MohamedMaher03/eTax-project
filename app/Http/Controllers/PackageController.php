@@ -8,8 +8,13 @@ use Illuminate\Http\Request;
 
 class PackageController extends Controller
 {
+    public function getAllpackage(){
+        $packages = Package::all();
+        return response()->json($packages);
+    }
     public function buyPackage($id)
     {
+
         $user = auth()->user();
 
 
