@@ -25,5 +25,5 @@ Route::post('auth/verify-user-email', [AuthController::class,'verifyUserEmail'])
 
 Route::post('auth/complete-register', [AuthController::class,'completeRegister']);
 
-Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->name('buy.package');
+Route::patch('buy/package/{id}',[PackageController::class,'buyPackage'])->middleware('role:1',)->name('buy.package');
 
