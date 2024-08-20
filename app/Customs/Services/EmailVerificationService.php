@@ -108,7 +108,7 @@ class EmailVerificationService
         //     $checkIfTokenExists->delete();
         // }
         $token = Str::uuid();
-        $url = config('app.url') . "?token=" . $token . "&email=" . $email;
+        $url = "http://127.0.0.1:3000/complete-register" . "?token=" . $token . "&email=" . $email;
 
         //$url = route('verify.email', ['token' => $token, 'email' => $email]);
 
