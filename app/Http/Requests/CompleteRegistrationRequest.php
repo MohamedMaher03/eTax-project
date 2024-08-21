@@ -29,8 +29,6 @@ class CompleteRegistrationRequest extends FormRequest
             'users_count' => ['required', 'integer','digits_between:1,20'],
             'revisers_count' => ['required', 'integer','digits_between:1,20'],
             'package_id'=>['required', 'integer', 'exists:packages,id'],
-
-
         ];
     }
 }

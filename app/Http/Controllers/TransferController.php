@@ -7,27 +7,25 @@ use App\Models\UserReviser;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role ;
+use App\Http\Requests\TransferRequest;
 
 class TransferController extends Controller
 {
-    public function transfer(Request $request)
+    public function transfer(TransferRequest $request)
     {
          // get user
      $admin = auth()->user();
      $organization = Organization::where('user_id' , $admin->id)->first();
      $balance = $request->balance;
-     // validation
-     if ($balance> $organization -> operations_count){
-         return response()->json(['message' => 'failed']);
-     }
+
      $userId = $request->userId;
 
      $user = User::find($userId);
+        if (!$user){
+        return response()->json(['message' => 'failed']);
+    }
      $userReviser = UserReviser::where('user_id' , $user->id)->first();
-     // validation
-     if (!$userReviser){
-         return response()->json(['message' => 'failed']);
-         }
+
          // subtract from admin
          $organization->operations_count -=  $balance;
          $organization->save();
