@@ -11,7 +11,9 @@ class PackageController extends Controller
 {
     public function getAllpackage(){
         $packages = Package::all();
-        return response()->json($packages);
+        return response()->json([
+            'packages'=>$packages
+        ]);
     }
     public function buyPackage($id)
     {

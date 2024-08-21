@@ -8,6 +8,15 @@ use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransferController;
 use App\Http\Requests\StatusRequest;
 use App\Http\Requests\TransferRequest;
+use App\Http\Middleware\HandleCors;
+
+
+Route::options('/{any}', function () {
+    return response()->json([], 200);
+})->where('any', '.*');
+
+
+Route::post('auth/verify-user-email', [AuthController::class, 'verifyUserEmail'])->name('verify.email');
 
 
 Route::get('/user', function (Request $request) {
@@ -15,7 +24,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::post('auth/register', [AuthController::class, 'register']);
-Route::get('/package', [PackageController::class, 'getAllData']);
+Route::get('/package', [PackageController::class, 'getAllpackage']);
 Route::post('/user/status', [UserStatusController::class, 'changeStatus'])
     ->middleware(['auth', 'admin']);
 Route::post('/transfer', [TransferController::class, 'transfer'])
@@ -26,7 +35,7 @@ Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth
 Route::post('/auth/newUser', [AuthController::class, 'addUser']);
 
 
-Route::post('auth/verify-user-email', [AuthController::class, 'verifyUserEmail'])->name('verify.email');
+
 
 Route::get('register-data/{token}', [AuthController::class, 'getRegisterData']);
 
