@@ -35,4 +35,11 @@ class ApiResponse
             "message" => "An unexpected error occured please try again"
             ],500);
     }
+
+    public static function notFound($message){
+        return response()->json([
+            "success"=> false,
+            "message"=> $message
+            ],404);
+    }
 }
