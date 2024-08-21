@@ -4,6 +4,8 @@ use App\Http\Controllers\PackageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\GetDataController;
+use App\Http\Controllers\LoadingController;
 use App\Http\Controllers\UserStatusController;
 use App\Http\Controllers\TransferController;
 use App\Http\Requests\StatusRequest;
@@ -24,6 +26,12 @@ Route::post('/transfer', [TransferController::class, 'transfer'])
 Route::post('/auth/login', [AuthController::class, 'login']);
 Route::post('/auth/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::post('/auth/newUser', [AuthController::class, 'addUser']);
+
+Route::post('/auth/login', [AuthController::class,'login']);
+Route::post('/auth/logout', [AuthController::class,'logout'])->middleware('auth');
+Route::post('/auth/newUser', [AuthController::class,'addUser']);
+Route::get('/getControllers/{key?}', [GetDataController::class,'getConfigbyKey']);
+Route::get('/resource', [LoadingController::class, 'getResource']);
 
 
 Route::post('auth/verify-user-email', [AuthController::class, 'verifyUserEmail'])->name('verify.email');
